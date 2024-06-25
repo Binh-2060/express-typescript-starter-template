@@ -12,7 +12,7 @@ const baseUrl = `/api/v${environment.api_version}/`;
 
 app.use(express.json());
 
-app.use(urlencoded({ extended: true }));
+app.use(urlencoded({ extended: false }));
 
 app.use((req, res, next) => {
   res.setHeader(
@@ -28,9 +28,9 @@ app.use((req, res, next) => {
 
 app.use(cors());
 
-app.use(ClientHandlers);
-
 app.use(Limiter);
+
+app.use(ClientHandlers);
 
 app.use(baseUrl, api);
 
