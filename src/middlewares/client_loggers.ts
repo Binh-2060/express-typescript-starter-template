@@ -7,7 +7,7 @@ export const ClientHandlers = (
   next: NextFunction
 ) => {
   loggers.info(
-    `method=${req.method} path=${req.url} status=${res.statusCode}`,
+    `method=${req.method} path=${req.url} status=${res.statusCode} request_id=${req['requestId']}`,
     {
       origin: 'api',
     }

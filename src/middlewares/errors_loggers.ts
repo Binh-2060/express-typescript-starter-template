@@ -20,7 +20,7 @@ export const ErrorHandlers = (
   }
 
   loggers.error(
-    `method=${req.method} path=${req.url} status=${statusCode} err=${message}`,
+    `method=${req.method} path=${req.url} status=${statusCode} request_id=${req['requestId']} err=${message}`,
     { origin: 'api' }
   );
 

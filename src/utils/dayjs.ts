@@ -12,3 +12,7 @@ export const FormatDatetime = (date: any) => {
   }
   return dayjs.tz(new Date(), 'Asia/Bangkok').format('YYYY-MM-DD HH:mm:ss');
 };
+
+export const GetCurrentDate = () => {
+  return dayjs.tz(new Date(), 'Asia/Bangkok').format('YYYY-MM-DD HH:mm:ss');
+};

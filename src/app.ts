@@ -3,14 +3,17 @@ import * as cors from 'express';
 import { urlencoded } from 'body-parser';
 import environment from './environment';
 import api from './api';
-import { ErrorHandlers } from './middlewares/errors-loggers';
-import { ClientHandlers } from './middlewares/client-loggers';
+import { ErrorHandlers } from './middlewares/errors_loggers';
+import { ClientHandlers } from './middlewares/client_loggers';
+import { UseRequestId } from './middlewares/requestid';
 import Limiter from './utils/rate-limit';
 
 const app = express();
 const baseUrl = `/api/v${environment.api_version}/`;
 
-app.use(express.json());
+app.use(UseRequestId);
+
+app.use(express.json({ limit: '50mb' }));
 
 app.use(urlencoded({ extended: false }));
 

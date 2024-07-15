@@ -10,6 +10,7 @@ router.get('/', (req: Request, res: Response, next: NextFunction) => {
     appname: 'Express-TypeScript-Starter-App',
     timestamp: FormatDatetime(new Date()),
     message: 'Welcome to Express Typesctipt Starter App',
+    request_id: req['requestId'],
   });
 });
 
