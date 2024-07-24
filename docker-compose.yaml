@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: application
+    environment:
+      - PORT=8002
+      - API_VERSION=1
+      - NODE_ENV=development
+    ports:
+      - 8002:8002
+    logging:
+      driver: 'fluentd'
+      options:
+        fluentd-address: 0.0.0.0:24224
+        tag: nodejs-app
+    depends_on:
+      - fluentd
+
+  fluentd:
+    image: fluent/fluent-bit
+    container_name: fluent_bit
+    ports:
+      - 24224:24224
+    volumes:
+      - ./configs/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
+      - ./configs/parsers.conf:/fluent-bit/etc/parsers.conf
+
+  loki:
+    image: grafana/loki:2.7.1
+    container_name: loki
+    ports:
+      - 3100:3100
+    volumes:
+      - ./configs/loki-config.yaml:/etc/loki/local-config.yaml
+      - ./logs/loki:/loki
+    command: -config.file=/etc/loki/local-config.yaml
+
+  grafana:
+    image: grafana/grafana:9.4.3
+    container_name: grafana
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - loki
