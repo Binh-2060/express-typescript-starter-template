@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import loggers from '../utils/loggers';
+import * as prom from '../utils/prom-client';
 
 export const ClientHandlers = (
   req: Request,
@@ -12,5 +13,10 @@ export const ClientHandlers = (
       origin: 'api',
     }
   );
+  prom.default.httpRequestsTotal.inc({
+    method: req.method,
+    route: req.url,
+    status: res.statusCode,
+  });
   next();
 };
