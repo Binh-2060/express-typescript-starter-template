@@ -7,16 +7,26 @@ export const ClientHandlers = (
   res: Response,
   next: NextFunction
 ) => {
-  loggers.info(
-    `method=${req.method} path=${req.url} status=${res.statusCode} request_id=${req['requestId']}`,
-    {
+  const originalSend = res.send;
+  res.send = function (body: any) {
+    // Log response information
+
+    loggers.info({
+      message: 'Request recieved',
+      method: req.method,
+      path: req.path,
+      params: req.params,
+      query: req.query,
+      status: res.statusCode,
+      body: req.body,
+      request_id: req['requestId'],
       origin: 'api',
-    }
-  );
-  prom.default.httpRequestsTotal.inc({
-    method: req.method,
-    route: req.url,
-    status: res.statusCode,
-  });
+      response: JSON.parse(body),
+    });
+
+    // Call the original send function
+    return originalSend.call(this, body);
+  };
+
   next();
 };

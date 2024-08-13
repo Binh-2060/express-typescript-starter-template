@@ -19,10 +19,16 @@ export const ErrorHandlers = (
     message = 'Interval error';
   }
 
-  loggers.error(
-    `method=${req.method} path=${req.url} status=${statusCode} request_id=${req['requestId']} err=${message}`,
-    { origin: 'api' }
-  );
+  loggers.error({
+    message: err.message,
+    method: req.method,
+    path: req.path,
+    params: req.params,
+    query: req.query,
+    status: res.statusCode,
+    request_id: req['requestId'],
+    origin: 'api',
+  });
 
   const response: ResponseError = {
     message: message,
