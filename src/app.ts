@@ -11,6 +11,7 @@ import { ClientHandlers } from './middlewares/client_loggers';
 import Limiter from './utils/rate-limit';
 import { resolve } from 'path';
 import * as prom from './utils/prom-client';
+import { SetMemoryUsage } from './middlewares/prom_client';
 
 const app = express();
 const baseUrl = `/api/v${environment.api_version}/`;
@@ -38,6 +39,8 @@ app.use((req, res, next) => {
 app.use(cors());
 
 app.use(Limiter);
+
+setInterval(SetMemoryUsage, 100000);
 
 app.use('/', express.static(resolve(__dirname, '..', '.', 'html')));
 
