@@ -10,6 +10,7 @@ import { UseRequestId } from './middlewares/requestid';
 import { ClientHandlers } from './middlewares/client_loggers';
 import Limiter from './utils/rate-limit';
 import { resolve } from 'path';
+import * as prom from './utils/prom-client';
 
 const app = express();
 const baseUrl = `/api/v${environment.api_version}/`;
@@ -41,6 +42,11 @@ app.use(Limiter);
 app.use('/', express.static(resolve(__dirname, '..', '.', 'html')));
 
 app.use(ClientHandlers);
+
+app.get('/metrics', async (req: Request, res: Response) => {
+  res.set('Content-Type', prom.default.register.contentType);
+  res.end(await prom.default.register.metrics());
+});
 
 app.get('/healthz', (req: Request, res: Response, next: NextFunction) => {
   return ResponseSuccess(res, 200, null, 'Healthy');

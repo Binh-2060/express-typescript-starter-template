@@ -24,6 +24,14 @@ export const ClientHandlers = (
       response: JSON.parse(body),
     });
 
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      prom.default.httpRequestsTotal.inc({
+        method: req.method,
+        route: req.path,
+        status: res.statusCode,
+      });
+    }
+
     // Call the original send function
     return originalSend.call(this, body);
   };
