@@ -7,8 +7,8 @@ export const ClientHandlers = (
   res: Response,
   next: NextFunction
 ) => {
-  const originalSend = res.send;
-  res.send = function (body: any) {
+  const originalSend = res.json;
+  res.json = function (body: any) {
     // Log response information
 
     loggers.info({
@@ -21,16 +21,14 @@ export const ClientHandlers = (
       body: req.body,
       request_id: req['requestId'],
       origin: 'api',
-      response: JSON.parse(body),
+      response: body,
     });
 
-    if (res.statusCode >= 200 && res.statusCode < 300) {
-      prom.default.httpRequestsTotal.inc({
-        method: req.method,
-        route: req.path,
-        status: res.statusCode,
-      });
-    }
+    prom.default.httpRequestsTotal.inc({
+      method: req.method,
+      route: req.path,
+      status: res.statusCode,
+    });
 
     // Call the original send function
     return originalSend.call(this, body);
