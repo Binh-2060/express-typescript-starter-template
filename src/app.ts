@@ -9,7 +9,7 @@ import { ResponseSuccess } from './utils/presenter';
 import { UseRequestId } from './middlewares/requestid';
 import { ClientHandlers } from './middlewares/client_loggers';
 import Limiter from './utils/rate-limit';
-
+import { ConnectDatabase } from './utils/pg';
 const app = express();
 const baseUrl = `/api/v${environment.api_version}/`;
 
@@ -47,5 +47,8 @@ app.use(baseUrl, api);
 
 //TODO add global handler
 app.use(ErrorHandlers);
+
+//TODO check database connection
+ConnectDatabase();
 
 export default app;
