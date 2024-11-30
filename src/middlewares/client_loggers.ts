@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import loggers from '../utils/loggers';
+import pino from '../utils/pino';
 
 const getDurationInMilliseconds = (start: [number, number]) => {
   const NS_PER_SEC = 1e9;
@@ -17,19 +18,36 @@ export const ClientHandlers = (
   const start = process.hrtime();
   res.send = function (body: any) {
     // Log response information
-    loggers.info({
-      message: 'Request recieved',
-      method: req.method,
-      path: req.path,
-      params: req.params,
-      query: req.query,
-      status: res.statusCode,
-      body: req.body,
-      request_id: req['requestId'],
-      origin: 'api',
-      response: JSON.parse(body),
-      latency: `${getDurationInMilliseconds(start).toLocaleString()} ms`,
-    });
+    // loggers.info({
+    //   message: 'Request recieved',
+    //   method: req.method,
+    //   path: req.path,
+    //   params: req.params,
+    //   query: req.query,
+    //   status: res.statusCode,
+    //   body: req.body,
+    //   request_id: req['requestId'],
+    //   origin: 'api',
+    //   response: JSON.parse(body),
+    //   latency: `${getDurationInMilliseconds(start).toLocaleString()} ms`,
+    // });
+
+    pino.info(
+      {
+        message: 'Request recieved',
+        method: req.method,
+        path: req.path,
+        params: req.params,
+        query: req.query,
+        status: res.statusCode,
+        body: req.body,
+        request_id: req['requestId'],
+        origin: 'api',
+        response: JSON.parse(body),
+        latency: `${getDurationInMilliseconds(start).toLocaleString()} ms`,
+      },
+      'MESSAGE_RECIEVED'
+    );
 
     // Call the original send function
     return originalSend.call(this, body);

@@ -1,7 +1,8 @@
 import { createServer } from 'http';
 import app from './app';
 import environment from './environment';
-import loggers from './utils/loggers';
+// import loggers from './utils/loggers';
+import loggers from './utils/pino';
 
 const port = environment.port || 8002;
 const server = createServer(app);
